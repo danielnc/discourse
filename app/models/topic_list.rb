@@ -41,10 +41,6 @@ class TopicList
     return @topics
   end
 
-  def filter_summary
-    @filter_summary ||= get_summary
-  end
-
   def attributes
     {'more_topics_url' => page}
   end

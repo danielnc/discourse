@@ -22,13 +22,12 @@ Discourse.ListController = Discourse.Controller.extend({
     return Discourse.SiteSettings.top_menu.split("|").map(function(i) {
       return Discourse.NavItem.fromText(i, {
         loggedOn: loggedOn,
-        hasCategories: hasCategories,
-        countSummary: summary
+        hasCategories: hasCategories
       });
     }).filter(function(i) {
       return i !== null;
     });
-  }.property('filterSummary'),
+  }.property(),
 
   /**
     Load a list based on a filter
@@ -55,7 +54,6 @@ Discourse.ListController = Discourse.Controller.extend({
       current = Discourse.NavItem.create({ name: filterMode });
     }
     return Discourse.TopicList.list(current).then(function(items) {
-      listController.set('filterSummary', items.filter_summary);
       listController.set('filterMode', filterMode);
       listController.set('loading', false);
       return items;
