@@ -40,8 +40,14 @@ Discourse.ListController = Discourse.Controller.extend({
     var listController = this;
     this.set('loading', true);
 
+    var trackingState = Discourse.get('currentUser.userTrackingState');
+
     if (filterMode === 'categories') {
       return Discourse.CategoryList.list(filterMode).then(function(items) {
+        if(trackingState) {
+          trackingState.sync(items, filterMode);
+          trackingState.trackIncoming(filterMode);
+        }
         listController.set('loading', false);
         listController.set('filterMode', filterMode);
         listController.set('categoryMode', true);
@@ -54,6 +60,10 @@ Discourse.ListController = Discourse.Controller.extend({
       current = Discourse.NavItem.create({ name: filterMode });
     }
     return Discourse.TopicList.list(current).then(function(items) {
+      if(trackingState) {
+        trackingState.sync(items, filterMode);
+        trackingState.trackIncoming(filterMode);
+      }
       listController.set('filterMode', filterMode);
       listController.set('loading', false);
       return items;

@@ -11,19 +11,9 @@ Discourse.ListTopicsView = Discourse.View.extend(Discourse.Scrolling, {
   templateName: 'list/topics',
   categoryBinding: 'controller.controllers.list.category',
   canCreateTopicBinding: 'controller.controllers.list.canCreateTopic',
+  listBinding: 'controller.model',
   loadedMore: false,
   currentTopicId: null,
-
-  insertedCount: (function() {
-    var inserted;
-    inserted = this.get('controller.inserted');
-    if (!inserted) return 0;
-    return inserted.length;
-  }).property('controller.inserted.@each'),
-
-  rollUp: (function() {
-    return this.get('insertedCount') > Discourse.SiteSettings.new_topics_rollup;
-  }).property('insertedCount'),
 
   willDestroyElement: function() {
     this.unbindScrolling();
@@ -55,6 +45,10 @@ Discourse.ListTopicsView = Discourse.View.extend(Discourse.Scrolling, {
     this.set('eyeline', eyeline);
     this.set('currentTopicId', null);
   },
+
+  showTable: function() {
+    return this.get('list.topics').length > 0 || Discourse.get('currentUser.userTrackingState.hasIncoming');
+  }.property('list.topics','Discourse.currentUser.userTrackingState.hasIncoming'),
 
   loadMore: function() {
     if (this.get('loading')) return;
